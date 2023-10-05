@@ -1,4 +1,5 @@
 import json
+import os
 from flask import Flask, request, make_response
 from langchain.chat_models import ChatOpenAI
 from typing import Optional, List, Dict
@@ -107,7 +108,7 @@ def scheduled_job():
         now = datetime.datetime.now()
         formatted_date = now.strftime("%Y년 %m월 %d일 %A")
         formatted_msg = format_message(formatted_date, daily_economy_news)
-        slack_token = "xoxb-5957647747094-5964252974531-gUxrYMbOFVZO16kF0TA1twRn"  # 실제 토큰으로 교체하세요
+        slack_token = os.environ.get("SLACK_TOKEN")
         message_to_channel(slack_token, "#매일경제-인기뉴스", formatted_msg)
     else:
         print("Failed to retrieve the webpage.")
@@ -123,6 +124,6 @@ job1 = {
 }
 
 scheduler.add_job(**job1)
-scheduler.add_job(**job2)
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
